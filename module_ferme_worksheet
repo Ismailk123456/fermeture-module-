@@ -1,0 +1,67 @@
+Option Explicit
+
+Dim LastActivityTime As Date
+
+Private Sub Workbook_Open()
+    LastActivityTime = Now
+End Sub
+
+Private Sub Workbook_SheetSelectionChange(ByVal Sh As Object, ByVal Target As Range)
+    LastActivityTime = Now
+End Sub
+
+Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    Application.OnTime EarliestTime:=NextTime, Procedure:="CloseWorkbook", Schedule:=False
+    If Not ThisWorkbook.Saved Then
+        ThisWorkbook.Save
+    End If
+End Sub
+
+Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
+    Cancel = True
+    Call SaveWithoutPrompt
+End Sub
+
+Private Sub SaveWithoutPrompt()
+    Application.DisplayAlerts = False
+    ThisWorkbook.Save
+    Application.DisplayAlerts = True
+End Sub
+
+Private Sub CloseWorkbook()
+    ThisWorkbook.Close savechanges:=False
+End Sub
+
+Sub StartTimer()
+    NextTime = Now + TimeValue("00:01:00")
+    Application.OnTime EarliestTime:=NextTime, Procedure:="CloseWorkbook", Schedule:=True
+End Sub
+
+Sub StopTimer()
+    On Error Resume Next
+    Application.OnTime Procedure:="CloseWorkbook", Schedule:=False
+End Sub
+
+Private Sub Workbook_SheetActivate(ByVal Sh As Object)
+    LastActivityTime = Now
+    StopTimer
+    StartTimer
+End Sub
+
+Private Sub Workbook_SheetDeactivate(ByVal Sh As Object)
+    LastActivityTime = Now
+    StopTimer
+    StartTimer
+End Sub
+
+Private Sub Workbook_WindowActivate(ByVal Wn As Excel.Window)
+    LastActivityTime = Now
+    StopTimer
+    StartTimer
+End Sub
+
+Private Sub Workbook_WindowDeactivate(ByVal Wn As Excel.Window)
+    LastActivityTime = Now
+    StopTimer
+    StartTimer
+End Sub
