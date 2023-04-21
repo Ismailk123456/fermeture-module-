@@ -1,0 +1,40 @@
+Sub jointure()
+    Dim ws1 As Worksheet, ws2 As Worksheet, ws3 As Worksheet
+    Dim col1 As Range, col2 As Range, resCol As Range
+    Dim i As Long, j As Long, k As Long
+    Dim value1 As Variant, value2 As Variant
+    
+    'Récupération des références des feuilles de calcul
+    Set ws1 = ThisWorkbook.Worksheets("Feuil1")
+    Set ws2 = ThisWorkbook.Worksheets("Feuil2")
+    Set ws3 = ThisWorkbook.Worksheets("Feuil3")
+    
+    'Récupération des références des colonnes à joindre
+    Set col1 = ws1.Range("A2:A" & ws1.Cells(Rows.Count, 1).End(xlUp).Row)
+    Set col2 = ws2.Range("B2:B" & ws2.Cells(Rows.Count, 2).End(xlUp).Row)
+    
+    'Initialisation de la colonne de résultat
+    Set resCol = ws3.Range("A2")
+    
+    'Boucle sur la première colonne
+    For i = 1 To col1.Rows.Count
+        'Récupération de la valeur à chercher
+        value1 = col1.Cells(i, 1).Value
+        
+        'Boucle sur la deuxième colonne
+        For j = 1 To col2.Rows.Count
+            'Récupération de la valeur à comparer
+            value2 = col2.Cells(j, 1).Value
+            
+            'Comparaison des valeurs
+            If value1 = value2 Then
+                'Ecriture des résultats dans la troisième colonne
+                resCol.Offset(k, 0).Value = value1
+                resCol.Offset(k, 1).Value = ws1.Cells(i + 1, 2).Value 'Récupération de la deuxième colonne de la première feuille
+                resCol.Offset(k, 2).Value = col2.Cells(j, 2).Value 'Récupération de la deuxième colonne de la deuxième feuille
+                k = k + 1 'Incrémentation du compteur de lignes
+            End If
+        Next j
+    Next i
+    
+End Sub
