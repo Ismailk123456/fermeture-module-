@@ -1,0 +1,11 @@
+Sub VerrouillerCellules()
+
+    'Déverrouiller les cellules que vous souhaitez modifier
+    Range("A1:B5").Locked = False
+    
+    'Verrouiller toutes les cellules de la feuille, sauf les cellules déverrouillées
+    ActiveSheet.Cells.Locked = True
+    ActiveSheet.Cells.SpecialCells(xlCellTypeBlanks).Locked = False
+    ActiveSheet.Protect DrawingObjects:=True, Contents:=True, Scenarios:=True
+    
+End Sub
