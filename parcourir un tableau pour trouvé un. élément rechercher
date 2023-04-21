@@ -1,0 +1,28 @@
+Private Sub CommandButton1_Click()
+    Dim numRecherche As String
+    Dim trouve As Boolean
+    Dim dernierLigne As Long
+    Dim i As Long
+    
+    numRecherche = Range("A1").Value 'Récupérer le numéro à rechercher depuis la cellule A1
+    
+    If numRecherche = "" Then 'Vérifier si l'utilisateur a tapé quelque chose dans la cellule A1
+        MsgBox "Vous n'avez pas entré de numéro à rechercher."
+        Exit Sub
+    End If
+    
+    dernierLigne = Range("A" & Rows.Count).End(xlUp).Row 'Récupérer le numéro de la dernière ligne avec du contenu dans la colonne A
+    
+    For i = 1 To dernierLigne 'Parcourir les lignes du tableau à partir de la cellule A1
+        If Range("A" & i).Value = numRecherche Then 'Vérifier si la cellule contient le numéro recherché
+            Range("A" & i).Select 'Sélectionner la cellule trouvée
+            trouve = True 'Marquer le numéro comme trouvé
+            Exit For 'Sortir de la boucle for
+        End If
+    Next i
+    
+    If Not trouve Then 'Si le numéro n'a pas été trouvé, afficher un message d'erreur
+        MsgBox "Le numéro " & numRecherche & " n'a pas été trouvé dans le tableau."
+    End If
+
+End Sub
