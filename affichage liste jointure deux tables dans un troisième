@@ -1,0 +1,51 @@
+Private Sub UserForm_Initialize()
+    
+    'Déclarer les variables pour les données et les feuilles
+    Dim ws1 As Worksheet, ws2 As Worksheet
+    Dim data1 As Range, data2 As Range
+    Dim arrData() As Variant, i As Long, j As Long
+    Dim keyCol1 As Long, keyCol2 As Long
+    Dim joinArr() As Variant, k As Long, l As Long
+    Dim searchStr As String
+    
+    'Définir les feuilles et les plages de données
+    Set ws1 = ThisWorkbook.Worksheets("Feuille1")
+    Set ws2 = ThisWorkbook.Worksheets("Feuille2")
+    Set data1 = ws1.Range("A1:C10") 'plage de données de la première table
+    Set data2 = ws2.Range("A1:C10") 'plage de données de la deuxième table
+    
+    'Définir les colonnes clé pour les deux tables
+    keyCol1 = 1 'clé primaire de la première table
+    keyCol2 = 2 'clé étrangère de la deuxième table
+    
+    'Récupérer le texte de recherche du TextBox
+    searchStr = TextBox1.Value
+    
+    'Rechercher les données correspondant au texte de recherche dans la première table
+    ReDim arrData(1 To Application.WorksheetFunction.CountIf(data1.Columns(1), "*" & searchStr & "*") + 1, 1 To data1.Columns.Count)
+    j = 1 'compteur pour les lignes dans le tableau de données
+    arrData(j, 1) = ws1.Cells(1, 1).Value 'nom de colonne de la première table
+    arrData(j, 2) = ws1.Cells(1, 2).Value 'nom de colonne de la première table
+    arrData(j, 3) = ws1.Cells(1, 3).Value 'nom de colonne de la première table
+    j = j + 1
+    For i = 2 To data1.Rows.Count
+        If InStr(1, data1.Cells(i, 1).Value, searchStr, vbTextCompare) > 0 Then
+            arrData(j, 1) = data1.Cells(i, 1).Value
+            arrData(j, 2) = data1.Cells(i, 2).Value
+            arrData(j, 3) = data1.Cells(i, 3).Value
+            j = j + 1
+        End If
+    Next i
+    
+    'Rechercher les données correspondant au texte de recherche dans la deuxième table et les joindre avec la première table
+    ReDim joinArr(1 To Application.WorksheetFunction.CountIf(data2.Columns(1), "*" & searchStr & "*"), 1 To data2.Columns.Count - 1)
+    k = 1 'compteur pour les lignes dans le tableau de jointure
+    For i = 2 To data2.Rows.Count
+        If InStr(1, data2.Cells(i, 1).Value, searchStr, vbTextCompare) > 0 Then
+            joinArr(k, 1) = data2.Cells(i, 2).Value
+            joinArr(k, 2) = data2.Cells(i, 3).Value
+            k = k + 1
+        End If
+    Next i
+    
+    'Joindre les deux tableaux sur la clé étr
